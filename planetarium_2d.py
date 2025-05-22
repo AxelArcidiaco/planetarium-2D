@@ -37,6 +37,8 @@ planets = [
 
 # Échelle pour adapter les distances à l'écran
 scale = 0.15
+min_scale = 0.03
+max_scale = 0.5
 
 # Boucle principale
 running = True
@@ -50,6 +52,13 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+
+        # Zoom avec molette de la souris
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            if event.button == 4:  # Molette vers le haut
+                scale = min(scale * 1.1, max_scale)
+            elif event.button == 5:  # Molette vers le bas
+                scale = max(scale * 0.9, min_scale)
 
     # Touches pour changer la date
     keys = pygame.key.get_pressed()
