@@ -12,6 +12,8 @@ pygame.display.set_caption("Planétarium Interactif")
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 SUN_COLOR = (255, 200, 0)
+BUTTON_COLOR = (70, 70, 70)
+BUTTON_HOVER_COLOR = (100, 100, 100)
 
 # Centre du planétarium
 center_x, center_y = width // 2, height // 2
@@ -36,9 +38,16 @@ planets = [
 ]
 
 # Échelle pour adapter les distances à l'écran
-scale = 0.15
+default_scale = 0.15
+scale = default_scale
 min_scale = 0.03
 max_scale = 0.5
+
+# Police
+font = pygame.font.SysFont(None, 28)
+
+# Bouton de réinitialisation
+button_rect = pygame.Rect(10, 40, 180, 35)
 
 # Boucle principale
 running = True
@@ -59,6 +68,9 @@ while running:
                 scale = min(scale * 1.1, max_scale)
             elif event.button == 5:  # Molette vers le bas
                 scale = max(scale * 0.9, min_scale)
+            elif event.button == 1:
+                if button_rect.collidepoint(event.pos):
+                    scale = default_scale
 
     # Touches pour changer la date
     keys = pygame.key.get_pressed()
@@ -73,8 +85,17 @@ while running:
 
     # Afficher la date
     font = pygame.font.SysFont(None, 28)
-    date_text = font.render(current_date.strftime("%Y-%m-%d"), True, WHITE)
+    date_text = font.render(current_date.strftime("%d/%m/%Y"), True, WHITE)
     screen.blit(date_text, (10, 10))
+
+    # Bouton "Réinitialiser le zoom"
+    mouse_pos = pygame.mouse.get_pos()
+    button_color = (
+        BUTTON_HOVER_COLOR if button_rect.collidepoint(mouse_pos) else BUTTON_COLOR
+    )
+    pygame.draw.rect(screen, button_color, button_rect)
+    button_text = font.render("Réinitialiser le zoom", True, WHITE)
+    screen.blit(button_text, (button_rect.x + 10, button_rect.y + 7))
 
     # Dessiner le Soleil
     pygame.draw.circle(screen, SUN_COLOR, (center_x, center_y), 12)
@@ -90,7 +111,9 @@ while running:
         y = center_y + math.sin(angle) * orbit_radius * scale
 
         # Dessiner l'orbite
-        pygame.draw.circle(screen, (50, 50, 50), (center_x, center_y), int(orbit_radius * scale), 1)
+        pygame.draw.circle(
+            screen, (50, 50, 50), (center_x, center_y), int(orbit_radius * scale), 1
+        )
 
         # Dessiner la planète
         pygame.draw.circle(screen, color, (int(x), int(y)), size)
