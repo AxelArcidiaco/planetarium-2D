@@ -66,6 +66,10 @@ while running:
         current_date += timedelta(days=speed)
     if keys[pygame.K_LEFT]:
         current_date -= timedelta(days=speed)
+    if keys[pygame.K_EQUALS] or keys[pygame.K_KP_PLUS]:  # + pour zoom
+        scale = min(scale * 1.05, max_scale)
+    if keys[pygame.K_MINUS] or keys[pygame.K_KP_MINUS]:  # - pour dézoom
+        scale = max(scale * 0.95, min_scale)
 
     # Afficher la date
     font = pygame.font.SysFont(None, 28)
